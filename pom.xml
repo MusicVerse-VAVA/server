@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.musicverse</groupId>
-    <artifactId>musicverse</artifactId>
+    <artifactId>server</artifactId>
     <version>0.0.1</version>
 
     <properties>
