@@ -21,20 +21,25 @@ public class Auth extends GETRequestHandler {
         val request = HttpHelper.parseJSON(exchange);
         val email = request.getString("email");
         val password = Util.hashText(request.getString("password"));
-        String username = db.query(authQuery, (ps) -> {
+        val user = db.query(authQuery, (ps) -> {
             ps.setString(1, email);
             ps.setString(2, password);
         }, (rs) -> {
             if (!rs.next()) {
                 return null;
             } else {
-                return rs.getString("nickname");
+                val result = new ObjectNode();
+                result.set("username", rs.getString("nickname"));
+                result.set("email", rs.getString("email"));
+                result.set("accessLevel", rs.getInt("access_level"));
+                result.set("id", rs.getInt("id"));
+                return result;
             }
         });
-        if (username != null) {
+        if (user != null) {
             val response = new ObjectNode();
             response.set("status", "ok");
-            response.set("username", username);
+            response.set("user", user);
             HttpHelper.respondWithJson(exchange, 200, response);
         } else {
             HttpHelper.respondWithErrorString(exchange, 403, "Invalid email or password");
