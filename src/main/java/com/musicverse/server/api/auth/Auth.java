@@ -3,12 +3,12 @@ package com.musicverse.server.api.auth;
 import com.falsepattern.json.node.ObjectNode;
 import com.musicverse.server.HttpHelper;
 import com.musicverse.server.Util;
-import com.musicverse.server.api.GETRequestHandler;
+import com.musicverse.server.api.POSTRequestHandler;
 import com.musicverse.server.db.Database;
 import com.sun.net.httpserver.HttpExchange;
 import lombok.val;
 
-public class Auth extends GETRequestHandler {
+public class Auth extends POSTRequestHandler {
     private static final String authQuery = Util.loadResource("/com/musicverse/server/sql/authenticate.sql");
 
     public Auth(Database db) {
@@ -17,7 +17,7 @@ public class Auth extends GETRequestHandler {
 
     @Override
     public boolean handleGetRequest(String url, String params, HttpExchange exchange) throws Throwable {
-        if (!url.equals("auth")) return false;
+        if (!url.equals("/auth")) return false;
         val request = HttpHelper.parseJSON(exchange);
         val email = request.getString("email");
         val password = Util.hashText(request.getString("password"));
@@ -42,7 +42,7 @@ public class Auth extends GETRequestHandler {
             response.set("user", user);
             HttpHelper.respondWithJson(exchange, 200, response);
         } else {
-            HttpHelper.respondWithErrorString(exchange, 403, "Invalid email or password");
+            HttpHelper.respondWithErrorString(exchange, 200, "Invalid email or password");
         }
         return true;
     }

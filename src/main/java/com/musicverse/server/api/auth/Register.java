@@ -1,16 +1,15 @@
 package com.musicverse.server.api.auth;
 
-import com.falsepattern.json.node.JsonNode;
 import com.musicverse.server.HttpHelper;
 import com.musicverse.server.Util;
-import com.musicverse.server.api.GETRequestHandler;
+import com.musicverse.server.api.POSTRequestHandler;
 import com.musicverse.server.db.Database;
 import com.sun.net.httpserver.HttpExchange;
 import lombok.val;
 
 import java.sql.ResultSet;
 
-public class Register extends GETRequestHandler {
+public class Register extends POSTRequestHandler {
     private static final String emailExistsQuery = Util.loadResource("/com/musicverse/server/sql/email_exists.sql");
     private static final String nicknameExistsQuery = Util.loadResource("/com/musicverse/server/sql/nickname_exists.sql");
     private static final String registerQuery = Util.loadResource("/com/musicverse/server/sql/register.sql");
@@ -29,18 +28,18 @@ public class Register extends GETRequestHandler {
         boolean nicknameExists = db.query(nicknameExistsQuery, (ps) -> ps.setString(1, username), ResultSet::next);
 
         if (emailExists || nicknameExists) {
-            HttpHelper.respondWithErrorString(exchange, 400, "Email or Nickname already exists");
+            HttpHelper.respondWithErrorString(exchange, 200, "Email or Nickname already exists");
             return true;
         }
 
         //Do not store passwords in plaintext
         val passwordHash = Util.hashText(request.getString("password"));
 
-        db.query(registerQuery, (ps) -> {
+        db.update(registerQuery, (ps) -> {
             ps.setString(1, username);
             ps.setString(2, email);
             ps.setString(3, passwordHash);
-        }, (rs) -> null);
+        });
 
         HttpHelper.respondWithOk(exchange);
         return true;

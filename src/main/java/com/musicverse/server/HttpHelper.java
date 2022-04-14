@@ -61,7 +61,7 @@ public class HttpHelper {
     }
 
     public static void respondWithErrorString(HttpExchange exchange, int code, String details) throws IOException {
-        respondWithJson(exchange, code, StringNode.of(details));
+        respondWithErrorJson(exchange, code, StringNode.of(details));
     }
 
     public static void respondException(HttpExchange exchange, int code, Exception exception) throws IOException {
