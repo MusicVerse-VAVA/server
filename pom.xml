@@ -14,7 +14,15 @@
         <postgresql.version>42.3.3</postgresql.version>
         <project.encoding>UTF-8</project.encoding>
         <project.mainclass>com.musicverse.server.Main</project.mainclass>
+        <json.version>0.4.1</json.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>FalsePattern</id>
+            <url>https://maven.falsepattern.com/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -27,6 +35,11 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.falsepattern</groupId>
+            <artifactId>json</artifactId>
+            <version>${json.version}</version>
         </dependency>
     </dependencies>
 
