@@ -23,9 +23,9 @@ public abstract class POSTRequestHandler extends RequestHandler{
             params = "";
         }
         if (baseUri.endsWith("/")) baseUri = baseUri.substring(0, baseUri.length() - 1);
-        return handleGetRequest(baseUri, params, exchange);
+        return handlePostRequest(baseUri, params, exchange);
     }
 
 
-    public abstract boolean handleGetRequest(String url, String params, HttpExchange exchange) throws Throwable;
+    public abstract boolean handlePostRequest(String url, String params, HttpExchange exchange) throws Throwable;
 }

@@ -18,7 +18,7 @@ public class Register extends POSTRequestHandler {
     }
 
     @Override
-    public boolean handleGetRequest(String url, String params, HttpExchange exchange) throws Throwable {
+    public boolean handlePostRequest(String url, String params, HttpExchange exchange) throws Throwable {
         if (!"/register".equals(url)) return false;
         val request = HttpHelper.parseJSON(exchange);
         val email = request.getString("email");

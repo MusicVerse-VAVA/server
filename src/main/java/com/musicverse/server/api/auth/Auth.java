@@ -16,7 +16,7 @@ public class Auth extends POSTRequestHandler {
     }
 
     @Override
-    public boolean handleGetRequest(String url, String params, HttpExchange exchange) throws Throwable {
+    public boolean handlePostRequest(String url, String params, HttpExchange exchange) throws Throwable {
         if (!url.equals("/auth")) return false;
         val request = HttpHelper.parseJSON(exchange);
         val email = request.getString("email");
