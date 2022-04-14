@@ -8,21 +8,23 @@ import lombok.val;
 import java.sql.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An abstraction layer on top of the raw jdbc database driver to simplify queries
  */
 public class Database implements AutoCloseable {
-    private static final int MAX_RETRY_COUNT = 10;
     private final String url;
     private final String user;
     private final String pass;
 
     private final AtomicReference<Connection> c = new AtomicReference<>(null);
-    private final Thread autoReconnect;
     private final AtomicBoolean running = new AtomicBoolean(true);
+    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+
     /**
-     * Connect to a database.
+     * Connect to a database. Requires the information from the secrets.json file's <code>database</code> entry.
      */
     public Database(JsonNode secrets) {
         try {
@@ -36,29 +38,6 @@ public class Database implements AutoCloseable {
             user = login.getString("user");
             pass = login.getString("pass");
             connect();
-            System.out.println("Starting database autoreconnect worker");
-            autoReconnect = new Thread(() -> {
-                while (running.get()) {
-                    try {
-                        //noinspection BusyWait
-                        Thread.sleep(60000); //1 minute
-                    } catch (InterruptedException e) {
-                        continue;
-                    }
-                    synchronized (c) {
-                        try {
-                            val db = c.get();
-                            c.get().close();
-                            connect();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-            autoReconnect.setName("Database auto-reconnect thread");
-            autoReconnect.setDaemon(true);
-            autoReconnect.start();
         } catch (Exception e) {
             throw new RuntimeException("Failed to connect to database", e);
         }
@@ -67,41 +46,44 @@ public class Database implements AutoCloseable {
     private void connect() throws SQLException {
         c.set(DriverManager.getConnection(url, user, pass));
     }
+    /**
+     * Insert data into the database safely.
+     * The SQL logic is done using a "prepare + execute" combo to avoid SQL injections.
+     * @param statement The prepare-formatted statement string
+     * @param prepareCallback A callback for setting the arguments of the prepared statement
+     * @return The amount of lines modified
+     */
+    public int update(String statement, PrepareCallback prepareCallback) {
+        @Cleanup("unlock") val lock = rwLock.writeLock();
+        lock.lock();
+        try {
+            @Cleanup val ps = c.get().prepareStatement(statement);
+            prepareCallback.process(ps);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to query database", e);
+        }
+    }
 
     /**
-     * Query the database and process the results in a callback.
+     * Query the database safely and process the results in a callback.
      * The SQL logic is done using a "prepare + execute" combo to avoid SQL injections.
+     * @param queryString The prepare-formatted query string
+     * @param prepareCallback A callback for setting the arguments of the prepared statement
+     * @param queryCallback A callback for processing the result set of the query
+     * @return The return value of <code>queryCallback</code>
      */
     public <T> T query(String queryString, PrepareCallback prepareCallback, QueryCallback<T> queryCallback) {
-        int retries = 0;
         T result;
-        while (true) {
-            synchronized (c) {
-                try {
-                    @Cleanup val ps = c.get().prepareStatement(queryString);
-                    prepareCallback.process(ps);
-                    @Cleanup val rs = ps.executeQuery();
-                    result = queryCallback.process(rs);
-                    break;
-                } catch (SQLException e) {
-                    if (retries >= MAX_RETRY_COUNT) {
-                        throw new RuntimeException("Failed to query database", e);
-                    } else {
-                        System.err.println("Failed to query database");
-                        e.printStackTrace();
-                        System.err.println("Reconnecting...");
-                        try {
-                            c.get().close();
-                        } catch (Throwable ignored) {}
-                        try {
-                            connect();
-                        } catch (SQLException ex) {
-                            throw new IllegalStateException("Failed to reconnect to database!", ex);
-                        }
-                        retries++;
-                    }
-                }
-            }
+        @Cleanup("unlock") val lock = rwLock.readLock();
+        lock.lock();
+        try {
+            @Cleanup val ps = c.get().prepareStatement(queryString);
+            prepareCallback.process(ps);
+            @Cleanup val rs = ps.executeQuery();
+            result = queryCallback.process(rs);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to query database", e);
         }
         return result;
     }
@@ -110,8 +92,6 @@ public class Database implements AutoCloseable {
     @SneakyThrows
     public void close() {
         running.set(false);
-        autoReconnect.interrupt();
-        autoReconnect.join();
         c.get().close();
     }
 
