@@ -23,10 +23,10 @@ public class Register extends GETRequestHandler {
         if (!"/register".equals(url)) return false;
         val request = HttpHelper.parseJSON(exchange);
         val email = request.getString("email");
-        val nickname = request.getString("nickname");
+        val username = request.getString("username");
 
         boolean emailExists = db.query(emailExistsQuery, (ps) -> ps.setString(1, email), ResultSet::next);
-        boolean nicknameExists = db.query(nicknameExistsQuery, (ps) -> ps.setString(1, nickname), ResultSet::next);
+        boolean nicknameExists = db.query(nicknameExistsQuery, (ps) -> ps.setString(1, username), ResultSet::next);
 
         if (emailExists || nicknameExists) {
             HttpHelper.respondWithErrorString(exchange, 400, "Email or Nickname already exists");
@@ -37,7 +37,7 @@ public class Register extends GETRequestHandler {
         val passwordHash = Util.hashText(request.getString("password"));
 
         db.query(registerQuery, (ps) -> {
-            ps.setString(1, nickname);
+            ps.setString(1, username);
             ps.setString(2, email);
             ps.setString(3, passwordHash);
         }, (rs) -> null);
