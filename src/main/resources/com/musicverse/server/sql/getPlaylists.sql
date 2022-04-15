@@ -1,0 +1,1 @@
+select * from playlists where user_id = ?

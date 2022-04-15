@@ -2,6 +2,7 @@ package com.musicverse.server.api;
 
 import com.musicverse.server.HttpHelper;
 import com.musicverse.server.api.auth.Auth;
+import com.musicverse.server.api.auth.Playlists;
 import com.musicverse.server.api.auth.Register;
 import com.musicverse.server.db.Database;
 import com.sun.net.httpserver.HttpExchange;
@@ -16,6 +17,7 @@ public class Api {
     public Api(Database db) {
         handlers.add(new Register(db));
         handlers.add(new Auth(db));
+        handlers.add(new Playlists(db));
     }
 
     @SneakyThrows
