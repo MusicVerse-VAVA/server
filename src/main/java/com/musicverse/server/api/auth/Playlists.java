@@ -1,5 +1,6 @@
 package com.musicverse.server.api.auth;
 
+import com.falsepattern.json.node.ListNode;
 import com.falsepattern.json.node.ObjectNode;
 import com.musicverse.server.HttpHelper;
 import com.musicverse.server.Util;
@@ -28,21 +29,17 @@ public class Playlists extends POSTRequestHandler {
         val playlists = db.query(getPlaylistsQuery, (ps) -> {
             ps.setInt(1,id);
         }, (rs) -> {
-           // val results = new ObjectNode[10];
-          //  int x=0;
-
-            val result = new ObjectNode();
+            val allPlaylists = new ListNode();
 
             while (rs.next()){
-                result.set("name", rs.getString("name"));
-                result.set("id", rs.getInt("id"));
-                result.set("description", rs.getString("description"));
-                result.set("private",rs.getInt("private"));
-
-               // results[x] = result;
-               // x++;
+                val playlist = new ObjectNode();
+                playlist.set("name", rs.getString("name"));
+                playlist.set("id", rs.getInt("id"));
+                playlist.set("description", rs.getString("description"));
+                playlist.set("private",rs.getInt("private"));
+                allPlaylists.add(playlist);
             }
-            return result;
+            return allPlaylists;
         });
 
         if (playlists != null) {
