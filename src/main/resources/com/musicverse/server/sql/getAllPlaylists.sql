@@ -1,0 +1,1 @@
+SELECT * FROM playlists where private > 0;
