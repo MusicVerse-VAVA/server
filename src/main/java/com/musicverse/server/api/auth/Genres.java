@@ -43,6 +43,6 @@ public class Genres extends GETRequestHandler {
             HttpHelper.respondWithErrorString(exchange, 500, "Could not get data");
         }
 
-        return  false;
+        return true;
     }
 }

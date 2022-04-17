@@ -54,7 +54,7 @@ public class Playlists extends POSTRequestHandler {
                 HttpHelper.respondWithErrorString(exchange, 200, "Invalid id");
             }
 
-            return false;
+            return true;
         }
         else if ("/allplaylists".equals(url)) {
             val request = HttpHelper.parseJSON(exchange);
@@ -81,8 +81,7 @@ public class Playlists extends POSTRequestHandler {
             } else {
                 HttpHelper.respondWithErrorString(exchange, 200, "Invalid id");
             }
-
-            return false;
+            return true;
         }
         else
             return false;
