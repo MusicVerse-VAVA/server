@@ -1,1 +1,1 @@
-select ? from genres
+select * from genres

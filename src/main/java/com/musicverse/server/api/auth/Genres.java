@@ -22,8 +22,8 @@ public class Genres extends GETRequestHandler {
     public boolean handleGetRequest(String url, String params, HttpExchange exchange) throws Throwable {
         if (!"/genres".equals(url)) return false;
 
-        val genres = db.query(getGenresQuery,  (ps) -> {
-            ps.setString(1,"*");}, (rs) -> {
+        val genres = db.query(getGenresQuery,  (ps) -> {},
+                (rs) -> {
             val allGenres = new ListNode();
             while (rs.next()){
                 val genre = new ObjectNode();
