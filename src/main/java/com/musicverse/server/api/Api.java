@@ -2,6 +2,7 @@ package com.musicverse.server.api;
 
 import com.musicverse.server.HttpHelper;
 import com.musicverse.server.api.auth.Auth;
+import com.musicverse.server.api.auth.Genres;
 import com.musicverse.server.api.auth.Playlists;
 import com.musicverse.server.api.auth.Register;
 import com.musicverse.server.db.Database;
@@ -18,6 +19,7 @@ public class Api {
         handlers.add(new Register(db));
         handlers.add(new Auth(db));
         handlers.add(new Playlists(db));
+        handlers.add(new Genres(db));
     }
 
     @SneakyThrows

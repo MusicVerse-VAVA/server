@@ -23,6 +23,7 @@ public class Register extends POSTRequestHandler {
         val request = HttpHelper.parseJSON(exchange);
         val email = request.getString("email");
         val username = request.getString("username");
+        val access_level = request.getInt("access_level");
 
         boolean emailExists = db.query(emailExistsQuery, (ps) -> ps.setString(1, email), ResultSet::next);
         boolean nicknameExists = db.query(nicknameExistsQuery, (ps) -> ps.setString(1, username), ResultSet::next);
@@ -39,6 +40,7 @@ public class Register extends POSTRequestHandler {
             ps.setString(1, username);
             ps.setString(2, email);
             ps.setString(3, passwordHash);
+            ps.setInt(4, access_level);
         });
 
         HttpHelper.respondWithOk(exchange);
