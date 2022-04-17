@@ -10,7 +10,7 @@ import com.musicverse.server.api.POSTRequestHandler;
 import com.sun.net.httpserver.HttpExchange;
 import lombok.val;
 
-public class Genres extends GETRequestHandler {
+public class Genres extends POSTRequestHandler {
 
     private static final String getGenresQuery = Util.loadResource("/com/musicverse/server/sql/getGenres.sql");
 
@@ -19,7 +19,7 @@ public class Genres extends GETRequestHandler {
     }
 
     @Override
-    public boolean handleGetRequest(String url, String params, HttpExchange exchange) throws Throwable {
+    public boolean handlePostRequest(String url, String params, HttpExchange exchange) throws Throwable {
         if (!"/genres".equals(url)) return false;
 
         val genres = db.query(getGenresQuery,  (ps) -> {},
