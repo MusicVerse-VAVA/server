@@ -1,0 +1,1 @@
+UPDATE artists SET name = ?, description = ?, genre_id = ? WHERE id = ?
