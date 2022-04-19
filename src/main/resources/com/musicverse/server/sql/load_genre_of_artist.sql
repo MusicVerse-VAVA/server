@@ -1,0 +1,1 @@
+SELECT genre FROM genres WHERE id = ?

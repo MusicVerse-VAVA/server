@@ -1,10 +1,7 @@
 package com.musicverse.server.api;
 
 import com.musicverse.server.HttpHelper;
-import com.musicverse.server.api.auth.Auth;
-import com.musicverse.server.api.auth.Genres;
-import com.musicverse.server.api.auth.Playlists;
-import com.musicverse.server.api.auth.Register;
+import com.musicverse.server.api.auth.*;
 import com.musicverse.server.db.Database;
 import com.sun.net.httpserver.HttpExchange;
 import lombok.SneakyThrows;
@@ -20,6 +17,8 @@ public class Api {
         handlers.add(new Auth(db));
         handlers.add(new Playlists(db));
         handlers.add(new Genres(db));
+        handlers.add(new CreateArtist(db));
+        handlers.add(new LoadArtistByUser(db));
     }
 
     @SneakyThrows
