@@ -20,6 +20,9 @@ public class Api {
         handlers.add(new CreateArtist(db));
         handlers.add(new LoadArtistByUser(db));
         handlers.add(new EditArtist(db));
+        handlers.add(new ArtistsByGenre(db));
+        handlers.add(new SongsByPlaylist(db));
+        handlers.add(new SongsByAlbum(db));
     }
 
     @SneakyThrows
