@@ -44,7 +44,7 @@ public class SongsByAlbum extends POSTRequestHandler {
                         result.set("image",rs.getString("image"));
                         result.set("genre_id",rs.getInt("genre_id"));
 
-                        result.set("artist",rs.getString(
+                        result.set("artist",(String)
                                 db.query(loadArtistName,
                                         (ps) -> {
                                             ps.setInt(1, result.getInt("artist_id"));
@@ -54,9 +54,9 @@ public class SongsByAlbum extends POSTRequestHandler {
                                                 return String.valueOf(ab.getString("name"));
                                             return null;
                                         }
-                        )));
+                        ));
 
-                        result.set("album",rs.getString(
+                        result.set("album",(String)
                                 db.query(loadAlbumName,
                                         (ps) -> {
                                             ps.setInt(1, result.getInt("album_id"));
@@ -66,9 +66,9 @@ public class SongsByAlbum extends POSTRequestHandler {
                                                 return String.valueOf(ab.getString("name"));
                                             return null;
                                         }
-                                )));
+                                ));
 
-                        result.set("genre",rs.getString(
+                        result.set("genre",(String)
                                 db.query(loadGenreName,
                                         (ps) -> {
                                             ps.setInt(1, result.getInt("genre_id"));
@@ -78,7 +78,7 @@ public class SongsByAlbum extends POSTRequestHandler {
                                                 return String.valueOf(ab.getString("genre"));
                                             return null;
                                         }
-                                )));
+                                ));
 
                         filteredSongs.add(result);
                     }
