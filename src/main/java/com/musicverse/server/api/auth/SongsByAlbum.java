@@ -12,6 +12,9 @@ import lombok.val;
 public class SongsByAlbum extends POSTRequestHandler {
 
     private static final String loadSongsByAlbum = Util.loadResource("/com/musicverse/server/sql/load_songs_by_album.sql");
+    private static final String loadArtistName = Util.loadResource("/com/musicverse/server/sql/load_artist_name.sql");
+    private static final String loadAlbumName = Util.loadResource("/com/musicverse/server/sql/load_album_name.sql");
+    private static final String loadGenreName = Util.loadResource("/com/musicverse/server/sql/load_genre_name.sql");
 
     public SongsByAlbum(Database db){
         super(db);
@@ -34,11 +37,49 @@ public class SongsByAlbum extends POSTRequestHandler {
                         result.set("id", rs.getInt("id"));
                         result.set("name", rs.getString("name"));
                         result.set("description", rs.getString("description"));
-                        result.set("user_id", rs.getInt("user_id"));
+                        result.set("artist_id", rs.getInt("artist_id"));
                         result.set("album_id",rs.getInt("album"));
                         result.set("duration",rs.getInt("duration"));
                         result.set("data",rs.getString("data"));
                         result.set("image",rs.getString("image"));
+                        result.set("genre_id",rs.getInt("genre_id"));
+
+                        result.set("artist",rs.getString(
+                                db.query(loadArtistName,
+                                        (ps) -> {
+                                            ps.setInt(1, result.getInt("artist_id"));
+                                        },
+                                        (ab) -> {
+                                            if (ab.next())
+                                                return String.valueOf(ab.getString("name"));
+                                            return null;
+                                        }
+                        )));
+
+                        result.set("album",rs.getString(
+                                db.query(loadAlbumName,
+                                        (ps) -> {
+                                            ps.setInt(1, result.getInt("album_id"));
+                                        },
+                                        (ab) -> {
+                                            if (ab.next())
+                                                return String.valueOf(ab.getString("name"));
+                                            return null;
+                                        }
+                                )));
+
+                        result.set("genre",rs.getString(
+                                db.query(loadGenreName,
+                                        (ps) -> {
+                                            ps.setInt(1, result.getInt("genre_id"));
+                                        },
+                                        (ab) -> {
+                                            if (ab.next())
+                                                return String.valueOf(ab.getString("genre"));
+                                            return null;
+                                        }
+                                )));
+
                         filteredSongs.add(result);
                     }
                     return filteredSongs;
