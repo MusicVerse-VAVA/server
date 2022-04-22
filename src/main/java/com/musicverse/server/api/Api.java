@@ -26,6 +26,7 @@ public class Api {
         handlers.add(new DeleteSong(db));
         handlers.add(new DeleteCollection(db));
         handlers.add(new CreateCollection(db));
+        handlers.add(new addToPlaylist(db));
     }
 
     @SneakyThrows
