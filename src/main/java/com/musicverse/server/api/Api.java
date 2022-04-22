@@ -23,6 +23,9 @@ public class Api {
         handlers.add(new ArtistsByGenre(db));
         handlers.add(new SongsByPlaylist(db));
         handlers.add(new SongsByAlbum(db));
+        handlers.add(new DeleteSong(db));
+        handlers.add(new DeleteCollection(db));
+        handlers.add(new CreateCollection(db));
     }
 
     @SneakyThrows

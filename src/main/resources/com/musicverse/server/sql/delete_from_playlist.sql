@@ -1,0 +1,1 @@
+DELETE FROM songs_in_playlists WHERE songs_id = ? AND playlists_id = ?
