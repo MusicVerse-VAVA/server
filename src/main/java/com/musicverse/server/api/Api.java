@@ -2,6 +2,8 @@ package com.musicverse.server.api;
 
 import com.musicverse.server.HttpHelper;
 import com.musicverse.server.api.auth.*;
+import com.musicverse.server.api.songfiles.DownloadSongData;
+import com.musicverse.server.api.songfiles.UploadSongData;
 import com.musicverse.server.db.Database;
 import com.sun.net.httpserver.HttpExchange;
 import lombok.SneakyThrows;
@@ -27,6 +29,9 @@ public class Api {
         handlers.add(new DeleteCollection(db));
         handlers.add(new CreateCollection(db));
         handlers.add(new addToPlaylist(db));
+
+        handlers.add(new DownloadSongData(db));
+        handlers.add(new UploadSongData(db));
     }
 
     @SneakyThrows
