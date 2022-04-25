@@ -23,7 +23,7 @@ public class DeleteSong extends POSTRequestHandler {
         val what = request.getInt("collection");
 
         if (what == 1){
-            db.update(fromAlbum, (ps) -> { ps.setInt(1, id); ps.setInt(1, id);});
+            db.update(fromAlbum, (ps) -> { ps.setInt(1, id); ps.setInt(2, id);});
 
         } else if (what == 0){
             db.update(fromPlaylist, (ps) -> {

@@ -29,7 +29,7 @@ public class Api {
         handlers.add(new DeleteCollection(db));
         handlers.add(new CreateCollection(db));
         handlers.add(new addToPlaylist(db));
-
+        handlers.add(new GetLastSongId(db));
         handlers.add(new DownloadSongData(db));
         handlers.add(new UploadSongData(db));
     }

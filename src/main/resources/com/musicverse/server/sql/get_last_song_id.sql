@@ -1,0 +1,1 @@
+SELECT * FROM songs ORDER BY id DESC LIMIT 1
