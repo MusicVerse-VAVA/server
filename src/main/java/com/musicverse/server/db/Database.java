@@ -5,6 +5,7 @@ import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.val;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -96,7 +97,7 @@ public class Database implements AutoCloseable {
     }
 
     public interface PrepareCallback {
-        void process(PreparedStatement ps) throws SQLException;
+        void process(PreparedStatement ps) throws SQLException, NoSuchAlgorithmException;
     }
 
     public interface QueryCallback<T> {

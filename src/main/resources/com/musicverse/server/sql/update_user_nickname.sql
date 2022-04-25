@@ -1,0 +1,1 @@
+UPDATE users SET nickname = ? WHERE id = ?
