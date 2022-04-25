@@ -63,6 +63,8 @@ public class Database implements AutoCloseable {
             return ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to query database", e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -83,7 +85,7 @@ public class Database implements AutoCloseable {
             prepareCallback.process(ps);
             @Cleanup val rs = ps.executeQuery();
             result = queryCallback.process(rs);
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchAlgorithmException e) {
             throw new RuntimeException("Failed to query database", e);
         }
         return result;
