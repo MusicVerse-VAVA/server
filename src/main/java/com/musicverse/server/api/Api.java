@@ -32,6 +32,9 @@ public class Api {
         handlers.add(new GetLastSongId(db));
         handlers.add(new DownloadSongData(db));
         handlers.add(new UploadSongData(db));
+        handlers.add(new SearchUser(db));
+        handlers.add(new UpdateUser(db));
+        handlers.add(new GetRequests(db));
     }
 
     @SneakyThrows
