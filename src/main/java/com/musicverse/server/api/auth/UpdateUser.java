@@ -61,6 +61,7 @@ public class UpdateUser extends POSTRequestHandler {
             val old_password = request.getString("old_password");
 
             val password = Util.hashText(request.getString("old_password"));
+            System.out.println(password);
 
             val currentPswd = db.query(getPassword,
                     (ps) -> {
@@ -73,8 +74,11 @@ public class UpdateUser extends POSTRequestHandler {
                             return rs.getString("password");
                         }
                     });
-
+            System.out.println(currentPswd);
             if (Objects.equals(currentPswd, password)){
+                System.out.println(new_password);
+                System.out.println(nickname);
+                System.out.println(user_id);
                 if (new_password.getBytes(StandardCharsets.UTF_8).length > 0){
                     db.update(updatePswd, (ps) -> {
                         ps.setInt(2, user_id);
@@ -86,6 +90,7 @@ public class UpdateUser extends POSTRequestHandler {
                         ps.setInt(2, user_id);
                         ps.setString(1, nickname);
                     });
+
                 }
             }
             val response = new ObjectNode();
